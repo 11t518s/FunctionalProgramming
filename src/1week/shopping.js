@@ -2,7 +2,7 @@
 const addItemToCart = (name, price, cart) => {
   const newCartItem = makeObject(name, price);
   const newCart = addItemOnArray(cart, newCartItem);
-  calcCartTotal(newCart);
+  handleDomUpdate(newCart);
   return newCart;
 };
 
@@ -10,9 +10,7 @@ const addItemToCart = (name, price, cart) => {
 const makeObject = (...arg) => ({ ...arg });
 
 // 액션
-const addItemOnArray = (array, newItem) => {
-  return [...array, newItem];
-};
+const addItemOnArray = (array, newItem) => [...array, newItem];
 
 // 액션
 const updateShippingIcons = (totalPrice) => {
@@ -39,18 +37,20 @@ const showOrHideButton = (button, shoppingCartTotal) => {
 };
 
 // 계산
-const isEqualOrOverToTarget = ({ target, ...rest }) =>
+export const isEqualOrOverToTarget = ({ target, ...rest }) =>
   Object.values(rest).reduce((acc, cur) => acc + cur) >= target;
 
-// 계산
-const calcTax = (shoppingCartTotal) => shoppingCartTotal * 0.1;
+export const TAX = 0.1;
 
 // 계산
-const getTotalFromArray = (array, element) =>
+export const calcTax = (shoppingCartTotal) => shoppingCartTotal * TAX;
+
+// 계산
+export const getTotalFromArray = (array, element) =>
   array.reduce((acc, cur) => acc + cur[`${element}`], 0);
 
 // 액션
-const calcCartTotal = (cart) => {
+const handleDomUpdate = (cart) => {
   const totalCartPrice = getTotalFromArray(cart, "price");
 
   updateShippingIcons(totalCartPrice);
