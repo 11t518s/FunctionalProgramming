@@ -1,45 +1,59 @@
-function addItemToCart(name, price, cart) {
-  // 계산
-  cart.push({ name, price });
-  calcCartTotal(cart);
-  return cart;
-}
+// 액션
+const addItemToCart = (name, price, cart) => {
+  const newCartItem = makeObject(name, price);
+  const newCart = addItemOnArray(cart, newCartItem);
+  calcCartTotal(newCart);
+  return newCart;
+};
 
-function update_shipping_icons(shopping_cart_total) {
-  var buy_buttons = get_buy_buttons_dom();
+// 액션
+const makeObject = (...arg) => ({ ...arg });
+
+// 액션
+const addItemOnArray = (array, newItem) => {
+  return [...array, newItem];
+};
+
+// 액션
+const updateShippingIcons = (totalPrice) => {
+  const buy_buttons = getBuyButtonsDom();
 
   buy_buttons.forEach((button) => {
-    showOrHideButton(button.item.price, shopping_cart_total, button);
+    showOrHideButton(button, totalPrice);
   });
-}
+};
 
-function showOrHideButton(price, shopping_cart_total, button) {
-  if (isOver(price, shopping_cart_total, 20)) {
+// 액션
+const showOrHideButton = (button, shoppingCartTotal) => {
+  if (
+    isEqualOrOverToTarget({
+      target: 20,
+      firstNumber: button.item.price,
+      secondNumber: shoppingCartTotal,
+    })
+  ) {
     button.show_free_shipping_icon();
   } else {
     button.hide_free_shipping_icon();
   }
-}
+};
 
-//계산
-const isOver = (price, shopping_cart_total, number) =>
-  price + shopping_cart_total >= number;
+// 계산
+const isEqualOrOverToTarget = ({ target, ...rest }) =>
+  Object.values(rest).reduce((acc, cur) => acc + cur) >= target;
 
-// function update_tax_dom(shopping_cart_total) {
-//   set_tax_dom(shopping_cart_total * 0.1);
-// }
+// 계산
+const calcTax = (shoppingCartTotal) => shoppingCartTotal * 0.1;
 
-//계산
-const calcTax = (shopping_cart_total) => shopping_cart_total * 0.1;
+// 계산
+const getTotalFromArray = (array, element) =>
+  array.reduce((acc, cur) => acc + cur[`${element}`], 0);
 
-//계산
-const count_calc_total = (cart) =>
-  cart.reduce((prev, curr) => prev + curr.price, 0);
+// 액션
+const calcCartTotal = (cart) => {
+  const totalCartPrice = getTotalFromArray(cart, "price");
 
-function calcCartTotal(cart) {
-  const shopping_cart_total = count_calc_total(cart);
-
-  set_cart_total_dom();
-  update_shipping_icons(shopping_cart_total);
-  set_tax_dom(calcTax(shopping_cart_total));
-}
+  updateShippingIcons(totalCartPrice);
+  setCartTotalDom();
+  setTaxDom(calcTax(totalCartPrice));
+};
