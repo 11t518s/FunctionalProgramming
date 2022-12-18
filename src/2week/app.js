@@ -67,7 +67,7 @@ function get_buy_buttons_dom(shopping_cart) {
     };
     buttons.push(item);
   }
-  return buttons;
+  return buttons; 
 }
 
 const update_tax_dom = total => set_tax_dom(total * 0.1);
