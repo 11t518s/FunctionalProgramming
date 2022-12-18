@@ -112,3 +112,8 @@ span {
 p, .price {
   height: 20px;
 }
+
+.free-icon {
+  display: none;
+}
+
