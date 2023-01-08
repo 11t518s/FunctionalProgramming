@@ -1,5 +1,6 @@
 import { ShoppingCart } from "./types/type";
-import { FREE_SHIPPING_LIMIT,TAX_RATE } from "./constants/constant";
+import { price_add_unit, string_to_number } from './utils/utils';
+import { calc_tax, isOver } from './logic/logic';
 
 let shoppingCart:ShoppingCart[] = [];
 let shopping_cart_total = 0;
@@ -31,10 +32,6 @@ const calc_cart_total = (shopping_cart) => {
   return total;
 }
 
-const string_to_number = str => Number(str.replace(/\D/g, ''));
-
-const price_add_unit = num => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+'원';
-
 const set_cart_total_dom = total => {
   (document.querySelector('.total-price') as HTMLElement).textContent = price_add_unit(total);
 };
@@ -43,10 +40,7 @@ const update_shipping_icons = total => {
   if (isOver(total)) (document.querySelector('.free-icon') as HTMLElement).style.display = 'block';
 };
 
-const isOver = (total, price = 0) => price + total >= FREE_SHIPPING_LIMIT;
-
-
-const update_tax_dom = total => set_tax_dom(total * TAX_RATE);
+const update_tax_dom = (total) => set_tax_dom(calc_tax(total));
 
 const set_tax_dom = value => {
   (document.querySelector('.tax-price') as HTMLElement).textContent = price_add_unit(value);
